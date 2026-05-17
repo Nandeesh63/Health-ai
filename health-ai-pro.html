@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Health AI Pro – Smart Health Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Noto+Sans+Kannada:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f4fbf6;
+  --card:#ffffff;
+  --card2:#edf7f1;
+  --border:#d1ead9;
+  --text:#1a3a2a;
+  --muted:#6b9e7e;
+  --green:#1a9e5c;  --green2:#2dcb7a;
+  --green3:#e6f7ee; --green4:#0d7a45;
+  --hr:#e05c6e;     --hr2:#f28b9a;
+  --bp:#2e86ab;     --bp2:#5fb8d4;
+  --sg:#d4830a;     --sg2:#f0ac40;
+  --ox:#6b3fa0;     --ox2:#a97cd4;
+  --tp:#1a9e5c;     --tp2:#2dcb7a;
+  --wt:#c06030;     --wt2:#e8925a;
+  --ai:#1a9e5c;     --ai2:#2dcb7a;
+  --yoga:#1a9e5c;   --yoga2:#2dcb7a;
+  --diet:#1a9e5c;   --diet2:#2dcb7a;
+  --sleep:#2e86ab;  --sleep2:#5fb8d4;
+  --med:#1a9e5c;    --med2:#2dcb7a;
+  --shadow:0 2px 16px rgba(26,158,92,.10);
+  --shadow2:0 4px 24px rgba(26,158,92,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* SUBTLE LEAF PATTERN OVERLAY */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231a9e5c' fill-opacity='1'%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3C/g%3E%3C/svg%3E");background-size:32px}
+
+/* ANIMATED BLOBS */
+.blob-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);animation:drift 14s ease-in-out infinite alternate}
+.b1{width:500px;height:500px;background:radial-gradient(circle,rgba(26,158,92,.18),transparent);top:-150px;left:-150px;animation-delay:0s}
+.b2{width:400px;height:400px;background:radial-gradient(circle,rgba(45,203,122,.14),transparent);top:40%;right:-100px;animation-delay:-4s}
+.b3{width:350px;height:350px;background:radial-gradient(circle,rgba(26,158,92,.10),transparent);bottom:-100px;left:20%;animation-delay:-8s}
+.b4{width:280px;height:280px;background:radial-gradient(circle,rgba(13,122,69,.12),transparent);bottom:30%;right:5%;animation-delay:-11s}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(24px,16px) scale(1.08)}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#1a9e5c40;border-radius:99px}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:500;background:rgba(244,251,246,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 12px rgba(26,158,92,.08)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-pulse{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
+.logo-pulse::before{content:'';position:absolute;inset:0;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green2));animation:logo-breathe 2.5s ease-in-out infinite;box-shadow:0 4px 14px rgba(26,158,92,.35)}
+@keyframes logo-breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.8;transform:scale(0.93)}}
+.logo-pulse span{position:relative;font-size:20px;z-index:1}
+.logo-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.5px;color:var(--text)}
+.logo-text em{font-style:normal;background:linear-gradient(90deg,var(--green4),var(--green2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-badge{font-size:9px;font-weight:700;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;padding:2px 7px;border-radius:8px;margin-left:2px;letter-spacing:.5px}
+.lang-row{display:flex;gap:5px}
+.lang-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;letter-spacing:.3px}
+.lang-btn.active{background:linear-gradient(135deg,var(--green),var(--green2));border-color:transparent;color:#fff;box-shadow:0 2px 10px rgba(26,158,92,.3)}
+
+/* MAIN */
+main{position:relative;z-index:1;padding:20px 16px 110px;max-width:500px;margin:0 auto}
+.page{display:none}.page.active{display:block}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin:28px 0 16px}
+.sec-hdr-pill{padding:6px 14px;border-radius:20px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;background:var(--green3);border:1.5px solid var(--border);color:var(--green4);display:flex;align-items:center;gap:6px}
+.sec-hdr-line{flex:1;height:1.5px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* GREETING */
+.greet-strip{background:linear-gradient(135deg,var(--green),var(--green4));border-radius:24px;padding:22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;box-shadow:var(--shadow2)}
+.greet-strip::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.1)}
+.greet-strip::after{content:'';position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.07)}
+.greet-name{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;color:#fff;position:relative}
+.greet-sub{font-size:12px;color:rgba(255,255,255,.8);margin-top:3px;position:relative}
+.greet-avatar{font-size:44px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15));position:relative}
+
+/* SCORE ROW */
+.score-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.score-tile{border-radius:18px;padding:14px 10px;text-align:center;border:1.5px solid var(--border);background:var(--card);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.score-tile::before{content:'';position:absolute;inset:0;opacity:.06;background:var(--green)}
+.score-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--green4)}
+.score-lbl{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.7px;font-weight:600}
+
+/* VITALS */
+.vitals-list{display:flex;flex-direction:column;gap:12px}
+.vital-row{border-radius:22px;padding:18px 20px;border:1.5px solid var(--border);background:var(--card);display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.vital-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(to bottom,var(--c1),var(--c2));border-radius:4px 0 0 4px}
+.vital-row:hover{transform:translateX(3px);border-color:var(--green);box-shadow:var(--shadow2)}
+.vital-row.open{border-color:var(--green);background:var(--green3)}
+.vital-icon-wrap{width:48px;height:48px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.vital-info{flex:1;min-width:0}
+.vital-name{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+.vital-reading{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--text);line-height:1.1;margin-top:2px}
+.vital-unit-lbl{font-size:11px;color:var(--muted)}
+.vital-badge{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;flex-shrink:0}
+.badge-normal{background:rgba(26,158,92,.12);color:#0d7a45;border:1px solid rgba(26,158,92,.3)}
+.badge-high{background:rgba(224,92,110,.1);color:#c0364a;border:1px solid rgba(224,92,110,.3)}
+.badge-low{background:rgba(212,131,10,.1);color:#a06008;border:1px solid rgba(212,131,10,.3)}
+.vital-tap-hint{font-size:10px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px}
+.tap-chevron{transition:transform .2s}
+.vital-row.open .tap-chevron{transform:rotate(90deg)}
+
+/* INPUT PANEL */
+.log-panel{margin-top:10px;border-radius:18px;padding:18px;background:var(--card);border:1.5px solid var(--border);animation:slide-in .25s ease;box-shadow:var(--shadow)}
+@keyframes slide-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.log-fields{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.log-field{flex:1;min-width:90px}
+.log-field label{font-size:11px;color:var(--muted);display:block;margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.log-input{width:100%;background:var(--green3);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-size:16px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .2s}
+.log-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,158,92,.1)}
+.log-input::placeholder{color:var(--muted)}
+.log-save{width:100%;padding:13px;border-radius:14px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:.4px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(26,158,92,.3)}
+.log-save:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,158,92,.35)}
+.mini-bars{display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:12px}
+.mini-bar{flex:1;border-radius:3px 3px 0 0;min-height:4px;background:linear-gradient(to top,var(--green),var(--green2));opacity:.4;transition:opacity .2s;cursor:default}
+.mini-bar:hover{opacity:1}
+
+/* ALERTS */
+.alert-item{border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:center;background:var(--card);border:1.5px solid var(--bc,#e05c6e)30;box-shadow:var(--shadow)}
+.alert-stripe{width:4px;border-radius:4px;align-self:stretch;background:var(--bc,#e05c6e);flex-shrink:0}
+.alert-body{flex:1}
+.alert-title{font-size:13px;font-weight:600;color:var(--text)}
+.alert-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* AI PAGE */
+.ai-hero{border-radius:28px;padding:28px 24px;margin-bottom:20px;background:linear-gradient(135deg,#1a0a00,#0a0a1a);border:1px solid var(--border);position:relative;overflow:hidden}
+.ai-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,53,.12),rgba(67,97,238,.12))}
+.ai-hero-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(90deg,var(--ai),var(--ai2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative}
+.ai-hero-sub{font-size:13px;color:var(--muted);margin-top:6px;position:relative}
+.ai-hero-icon{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:64px;opacity:.2}
+
+.ai-tab-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.ai-tab{padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;letter-spacing:.2px}
+.ai-tab.active{background:linear-gradient(135deg,var(--ai)20,var(--ai2)20);border-color:var(--ai);color:var(--ai2)}
+.ai-run-btn{width:100%;padding:16px;border-radius:18px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:.4px;background:linear-gradient(135deg,var(--ai),var(--ai2));color:#fff;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 32px rgba(255,107,53,.35)}
+.ai-run-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,107,53,.45)}
+.ai-run-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.ai-card{border-radius:22px;padding:22px;margin-top:16px;background:var(--card);border:1px solid var(--border);animation:slide-in .35s ease}
+.ai-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.ai-card-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--ai),var(--ai2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ai-card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.ai-card-body{font-size:14px;line-height:1.75;color:#d0d0e8;white-space:pre-wrap}
+.dots{display:inline-flex;gap:5px;align-items:center}
+.dots span{width:7px;height:7px;border-radius:50%;animation:bounce-dot 1.3s ease-in-out infinite}
+.dots span:nth-child(1){background:var(--ai);animation-delay:0s}
+.dots span:nth-child(2){background:var(--ai2);animation-delay:.2s}
+.dots span:nth-child(3){background:var(--bp2);animation-delay:.4s}
+@keyframes bounce-dot{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-7px);opacity:1}}
+
+/* YOGA PAGE */
+.yoga-hero{border-radius:28px;padding:28px 24px;margin-bottom:20px;background:linear-gradient(135deg,#0a1a15,#0a0f1a);border:1px solid var(--border);position:relative;overflow:hidden}
+.yoga-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(67,170,139,.15),rgba(94,96,206,.1))}
+.yoga-hero-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(90deg,var(--yoga),var(--yoga2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative}
+.yoga-hero-icon{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:64px;opacity:.2}
+
+.condition-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.cond-chip{padding:8px 15px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
+.cond-chip.active{background:linear-gradient(135deg,var(--yoga)20,var(--yoga2)20);border-color:var(--yoga);color:var(--yoga2)}
+
+.yoga-card{border-radius:22px;overflow:hidden;margin-bottom:12px;background:var(--card);border:1px solid var(--border)}
+.yoga-card-hdr{padding:16px 18px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.yoga-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.yoga-card-info{flex:1}
+.yoga-card-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.yoga-card-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.yoga-card-badge{padding:4px 10px;border-radius:12px;font-size:10px;font-weight:700;background:rgba(67,170,139,.15);color:var(--yoga);border:1px solid rgba(67,170,139,.3)}
+.yoga-detail{padding:0 18px 18px;border-top:1px solid var(--border);display:none;animation:slide-in .2s ease}
+.yoga-detail.show{display:block}
+.yoga-step{display:flex;gap:12px;margin-top:14px;align-items:flex-start}
+.yoga-step-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--yoga),var(--yoga2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
+.yoga-step-text{font-size:13px;line-height:1.6;color:#c8d8d0}
+.yoga-tips-box{margin-top:14px;padding:14px;border-radius:14px;background:#0a1a15;border:1px solid rgba(67,170,139,.2)}
+.yoga-tips-title{font-size:11px;font-weight:700;color:var(--yoga);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.yoga-tip{font-size:12px;color:var(--muted);margin-bottom:5px;display:flex;gap:8px}
+.yoga-tip::before{content:'🌿';flex-shrink:0}
+
+/* DIET PAGE */
+.diet-hero{border-radius:28px;padding:28px 24px;margin-bottom:20px;background:linear-gradient(135deg,#1a0e08,#1a0a0a);border:1px solid var(--border);position:relative;overflow:hidden}
+.diet-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(231,111,81,.12),rgba(244,162,97,.1))}
+.diet-hero-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(90deg,var(--diet),var(--diet2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative}
+.diet-hero-icon{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:64px;opacity:.2}
+
+.meal-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px}
+.meal-tabs::-webkit-scrollbar{display:none}
+.meal-tab{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0}
+.meal-tab.active{background:linear-gradient(135deg,var(--diet)20,var(--diet2)20);border-color:var(--diet);color:var(--diet2)}
+
+.diet-section{display:none}.diet-section.active{display:block}
+
+.meal-card{border-radius:20px;padding:18px;margin-bottom:12px;background:var(--card);border:1px solid var(--border)}
+.meal-card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.meal-time-badge{padding:5px 12px;border-radius:12px;font-size:11px;font-weight:700;background:linear-gradient(135deg,var(--diet),var(--diet2));color:#fff}
+.meal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.meal-desc{font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+.food-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.food-item{padding:5px 12px;border-radius:12px;font-size:12px;font-weight:600}
+.food-eat{background:rgba(6,214,160,.1);color:#06d6a0;border:1px solid rgba(6,214,160,.25)}
+.food-avoid{background:rgba(255,77,109,.1);color:#ff4d6d;border:1px solid rgba(255,77,109,.25)}
+.food-moderate{background:rgba(249,199,79,.1);color:#f9c74f;border:1px solid rgba(249,199,79,.25)}
+.nutrient-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.nutrient-pill{padding:4px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--card2);border:1px solid var(--border);color:var(--muted)}
+
+/* WELLNESS PAGE */
+.wellness-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.wellness-card{border-radius:22px;padding:20px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:all .2s;text-align:center}
+.wellness-card:hover{transform:translateY(-2px);border-color:var(--wc,#fff)30}
+.wellness-icon{font-size:36px;margin-bottom:10px}
+.wellness-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--wc,#fff)}
+.wellness-val{font-size:24px;font-weight:800;color:var(--wc,#fff);margin-top:4px;font-family:'Syne',sans-serif}
+.wellness-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+.sleep-card{border-radius:22px;padding:22px;background:var(--card);border:1px solid var(--border);margin-bottom:12px}
+.sleep-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.sleep-log-row{display:flex;gap:10px;margin-bottom:12px}
+.sleep-log-row .log-field{flex:1}
+.sleep-quality-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.quality-btn{padding:7px 14px;border-radius:14px;border:1px solid var(--border);background:var(--card2);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
+.quality-btn.active{background:linear-gradient(135deg,var(--sleep)30,var(--sleep2)30);border-color:var(--sleep);color:var(--sleep2)}
+.sleep-save-btn{width:100%;padding:12px;border-radius:14px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--sleep),var(--sleep2));color:#fff;transition:all .2s}
+.sleep-save-btn:hover{opacity:.85;transform:translateY(-1px)}
+
+.water-tracker{border-radius:22px;padding:22px;background:var(--card);border:1px solid var(--border);margin-bottom:12px}
+.water-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.water-cups{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.water-cup{width:44px;height:44px;border-radius:14px;border:2px solid #1e3a5f;background:#0a1929;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .2s;filter:grayscale(1);opacity:.4}
+.water-cup.filled{border-color:#4cc9f0;background:rgba(76,201,240,.15);filter:grayscale(0);opacity:1}
+.water-info{font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px}
+.water-reset{padding:9px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;width:100%;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.water-reset:hover{background:#ffffff10}
+
+.steps-card{border-radius:22px;padding:22px;background:var(--card);border:1px solid var(--border);margin-bottom:12px}
+.steps-bar-wrap{background:#ffffff08;border-radius:10px;height:10px;margin:12px 0;overflow:hidden}
+.steps-bar{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--tp),var(--tp2));transition:width .5s ease}
+.steps-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+
+/* HISTORY */
+.hist-day-hdr{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin:20px 0 10px;padding-left:4px}
+.hist-item{border-radius:18px;padding:14px 18px;margin-bottom:8px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;gap:14px}
+.hist-icon{width:42px;height:42px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.hist-reading{font-family:'Syne',sans-serif;font-size:20px;font-weight:700}
+.hist-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.hist-badge{margin-left:auto;flex-shrink:0}
+
+/* SETTINGS */
+.sett-card{border-radius:22px;padding:20px;margin-bottom:16px;background:var(--card);border:1px solid var(--border)}
+.sett-card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prof-field label{font-size:11px;color:var(--muted);display:block;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.sett-input,.sett-select{width:100%;background:#ffffff08;border:1px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .2s}
+.sett-input:focus,.sett-select:focus{border-color:var(--ai)}
+.sett-input::placeholder{color:var(--muted)}
+.api-row{display:flex;gap:10px;align-items:center}
+.api-save{padding:11px 18px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--ai),var(--ai2));color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;white-space:nowrap}
+.api-note{font-size:11px;color:var(--muted);margin-top:8px}
+.api-note span{color:var(--ai2)}
+.data-btn{width:100%;padding:13px;border-radius:14px;border:1px solid var(--border);background:#ffffff06;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.data-btn:hover{background:#ffffff10}
+.data-btn.danger{color:#ff4d6d;border-color:#ff4d6d30}
+.data-btn.danger:hover{background:#ff4d6d15}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(8,9,15,.85);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0 env(safe-area-inset-bottom,8px)}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border-radius:14px;cursor:pointer;border:none;background:none;color:var(--muted);font-size:9px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
+.bnav-btn .ni{font-size:18px;transition:transform .2s}
+.bnav-btn.active{color:var(--text)}
+.bnav-btn.active .ni{transform:translateY(-3px)}
+.bnav-btn.active .nt{background:linear-gradient(90deg,var(--hr),var(--bp2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(16px);background:#1a1b2e;border:1px solid var(--border);border-radius:14px;padding:11px 22px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:9999;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty .empty-icon{font-size:48px;margin-bottom:12px;opacity:.4}
+.empty p{font-size:13px;line-height:1.6}
+
+/* LANG OVERRIDES */
+.kn{font-family:'Noto Sans Kannada','Plus Jakarta Sans',sans-serif}
+.hi{font-family:'Noto Sans Devanagari','Plus Jakarta Sans',sans-serif}
+.hidden{display:none!important}
+
+/* MEDITATION */
+.meditation-card{border-radius:22px;padding:22px;background:var(--card);border:1px solid var(--border);margin-bottom:12px}
+.med-timer{text-align:center;padding:20px 0}
+.med-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--med),var(--med2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 40px rgba(45,106,79,.3);animation:med-pulse 3s ease-in-out infinite}
+@keyframes med-pulse{0%,100%{box-shadow:0 0 40px rgba(45,106,79,.3)}50%{box-shadow:0 0 60px rgba(45,106,79,.5)}}
+.med-time-display{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff}
+.med-label{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px}
+.med-btn-row{display:flex;gap:10px}
+.med-btn{flex:1;padding:13px;border-radius:14px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;transition:all .2s}
+.med-start{background:linear-gradient(135deg,var(--med),var(--med2));color:#fff}
+.med-reset{background:var(--card2);color:var(--muted);border:1px solid var(--border)}
+.med-presets{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.med-preset{padding:7px 16px;border-radius:14px;border:1px solid var(--border);background:var(--card2);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.med-preset.active{background:linear-gradient(135deg,var(--med)20,var(--med2)20);border-color:var(--med);color:var(--med2)}
+</style>
+</head>
+<body>
+
+<div class="blob-wrap">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-pulse"><span>❤️</span></div>
+    <div class="logo-text">Health<em>AI</em></div>
+    <div class="logo-badge">PRO</div>
+  </div>
+  <div class="lang-row">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('kn')">ಕನ್ನಡ</button>
+    <button class="lang-btn" onclick="setLang('hi')">हिंदी</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active" id="page-home">
+  <div class="greet-strip">
+    <div>
+      <div class="greet-name" id="g-name">Health Dashboard</div>
+      <div class="greet-sub" id="g-sub">Good morning 👋 Log your vitals</div>
+    </div>
+    <div class="greet-avatar">🧑‍⚕️</div>
+  </div>
+  <div class="score-row">
+    <div class="score-tile" style="--tc:var(--hr)"><div class="score-val" id="h-streak">0</div><div class="score-lbl" id="lbl-streak">Streak</div></div>
+    <div class="score-tile" style="--tc:var(--tp)"><div class="score-val" id="h-logs">0</div><div class="score-lbl" id="lbl-logs">Logs</div></div>
+    <div class="score-tile" style="--tc:var(--ai2)"><div class="score-val" id="h-score">–</div><div class="score-lbl" id="lbl-score">Score</div></div>
+  </div>
+  <div class="sec-hdr"><div class="sec-hdr-pill" id="lbl-vitals">📊 My Vitals</div><div class="sec-hdr-line"></div></div>
+  <div class="vitals-list" id="vitals-list"></div>
+  <div class="sec-hdr" style="margin-top:28px"><div class="sec-hdr-pill" id="lbl-alerts">🚨 Alerts</div><div class="sec-hdr-line"></div></div>
+  <div id="alerts-box"></div>
+</div>
+
+<!-- ══════════ AI ══════════ -->
+<div class="page" id="page-ai">
+  <div class="ai-hero">
+    <div class="ai-hero-title" id="ai-hero-title">AI Health Analysis</div>
+    <div class="ai-hero-sub" id="ai-hero-sub">Powered by Groq · llama-3.3-70b</div>
+    <div class="ai-hero-icon">🤖</div>
+  </div>
+  <div class="ai-tab-row">
+    <button class="ai-tab active" onclick="setAiTab('analysis')" id="atab-analysis">🔬 Analysis</button>
+    <button class="ai-tab" onclick="setAiTab('risk')" id="atab-risk">⚠️ Risk</button>
+    <button class="ai-tab" onclick="setAiTab('diet')" id="atab-diet">🥗 Diet</button>
+    <button class="ai-tab" onclick="setAiTab('yoga')" id="atab-yoga">🧘 Yoga</button>
+    <button class="ai-tab" onclick="setAiTab('sleep')" id="atab-sleep">😴 Sleep</button>
+    <button class="ai-tab" onclick="setAiTab('doctor')" id="atab-doctor">👨‍⚕️ Doctor</button>
+  </div>
+  <button class="ai-run-btn" id="ai-run-btn" onclick="runAI()">
+    <span id="ai-btn-lbl">✨ Analyze My Health</span>
+  </button>
+  <div id="ai-result"></div>
+</div>
+
+<!-- ══════════ YOGA ══════════ -->
+<div class="page" id="page-yoga">
+  <div class="yoga-hero">
+    <div class="yoga-hero-title" id="yoga-hero-title">🧘 Yoga & Wellness</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:6px;position:relative" id="yoga-hero-sub">Poses & tips based on your health condition</div>
+    <div class="yoga-hero-icon">🌿</div>
+  </div>
+
+  <div class="sec-hdr"><div class="sec-hdr-pill">🎯 Select Condition</div><div class="sec-hdr-line"></div></div>
+  <div class="condition-chips" id="yoga-chips"></div>
+  <div id="yoga-content"></div>
+</div>
+
+<!-- ══════════ DIET ══════════ -->
+<div class="page" id="page-diet">
+  <div class="diet-hero">
+    <div class="diet-hero-title" id="diet-hero-title">🥗 Diet Plans</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:6px;position:relative" id="diet-hero-sub">Personalized nutrition for your health</div>
+    <div class="diet-hero-icon">🍱</div>
+  </div>
+  <div class="meal-tabs" id="diet-tabs"></div>
+  <div id="diet-content"></div>
+</div>
+
+<!-- ══════════ WELLNESS ══════════ -->
+<div class="page" id="page-wellness">
+  <div class="sec-hdr"><div class="sec-hdr-pill">💧 Hydration</div><div class="sec-hdr-line"></div></div>
+  <div class="water-tracker">
+    <div class="water-title">💧 <span id="water-title-lbl">Daily Water Intake</span></div>
+    <div class="water-cups" id="water-cups"></div>
+    <div class="water-info" id="water-info">0 / 8 glasses • 0 ml</div>
+    <button class="water-reset" onclick="resetWater()">🔄 Reset</button>
+  </div>
+
+  <div class="sec-hdr"><div class="sec-hdr-pill">😴 Sleep Log</div><div class="sec-hdr-line"></div></div>
+  <div class="sleep-card">
+    <div class="sleep-title">😴 <span id="sleep-lbl">Sleep Tracker</span></div>
+    <div class="sleep-log-row">
+      <div class="log-field"><label>Bedtime</label><input class="log-input" type="time" id="sleep-bed" value="22:30"/></div>
+      <div class="log-field"><label>Wake Time</label><input class="log-input" type="time" id="sleep-wake" value="06:30"/></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Sleep Quality</div>
+    <div class="sleep-quality-row">
+      <button class="quality-btn" onclick="setSleepQ(this,'poor')">😴 Poor</button>
+      <button class="quality-btn" onclick="setSleepQ(this,'fair')">😐 Fair</button>
+      <button class="quality-btn active" onclick="setSleepQ(this,'good')">😊 Good</button>
+      <button class="quality-btn" onclick="setSleepQ(this,'great')">🌟 Great</button>
+    </div>
+    <button class="sleep-save-btn" onclick="saveSleep()">Log Sleep</button>
+    <div id="sleep-result" style="margin-top:14px"></div>
+  </div>
+
+  <div class="sec-hdr"><div class="sec-hdr-pill">🚶 Steps</div><div class="sec-hdr-line"></div></div>
+  <div class="steps-card">
+    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px">🚶 <span>Daily Steps</span></div>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+      <input class="log-input" type="number" id="steps-input" placeholder="e.g. 8000" style="flex:1"/>
+      <button class="log-save" style="width:auto;padding:12px 18px;--c1:#06d6a0;--c2:#80ffdb" onclick="logSteps()">Log</button>
+    </div>
+    <div class="steps-bar-wrap"><div class="steps-bar" id="steps-bar" style="width:0%"></div></div>
+    <div class="steps-label"><span id="steps-current">0 steps</span><span id="steps-goal">Goal: 10,000</span></div>
+  </div>
+
+  <div class="sec-hdr"><div class="sec-hdr-pill">🧘 Meditation Timer</div><div class="sec-hdr-line"></div></div>
+  <div class="meditation-card">
+    <div class="meditation-card">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px">🧘 Meditation Timer</div>
+      <div class="med-presets">
+        <button class="med-preset active" onclick="setMedDur(5,this)">5 min</button>
+        <button class="med-preset" onclick="setMedDur(10,this)">10 min</button>
+        <button class="med-preset" onclick="setMedDur(15,this)">15 min</button>
+        <button class="med-preset" onclick="setMedDur(20,this)">20 min</button>
+        <button class="med-preset" onclick="setMedDur(30,this)">30 min</button>
+      </div>
+      <div class="med-timer">
+        <div class="med-circle">
+          <div class="med-time-display" id="med-display">05:00</div>
+          <div class="med-label" id="med-status">Ready</div>
+        </div>
+      </div>
+      <div class="med-btn-row">
+        <button class="med-btn med-start" id="med-start-btn" onclick="toggleMed()">▶ Start</button>
+        <button class="med-btn med-reset" onclick="resetMed()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HISTORY ══════════ -->
+<div class="page" id="page-history">
+  <div class="sec-hdr"><div class="sec-hdr-pill" id="lbl-history">📈 History</div><div class="sec-hdr-line"></div></div>
+  <div id="hist-box"></div>
+</div>
+
+<!-- ══════════ SETTINGS ══════════ -->
+<div class="page" id="page-settings">
+  <div class="sec-hdr"><div class="sec-hdr-pill" id="lbl-profile">👤 Profile</div><div class="sec-hdr-line"></div></div>
+  <div class="sett-card">
+    <div class="prof-grid">
+      <div class="prof-field"><label id="lbl-name">Name</label><input class="sett-input" id="p-name" placeholder="Your name" oninput="saveProfile()"/></div>
+      <div class="prof-field"><label id="lbl-age">Age</label><input class="sett-input" type="number" id="p-age" placeholder="Age" oninput="saveProfile()"/></div>
+      <div class="prof-field">
+        <label id="lbl-gender">Gender</label>
+        <select class="sett-select" id="p-gender" onchange="saveProfile()">
+          <option value="">Select</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+        </select>
+      </div>
+      <div class="prof-field">
+        <label id="lbl-cond">Condition</label>
+        <select class="sett-select" id="p-cond" onchange="saveProfile()">
+          <option value="none">None / General</option>
+          <option value="diabetes">Diabetes</option>
+          <option value="hypertension">Hypertension</option>
+          <option value="heart">Heart Disease</option>
+          <option value="asthma">Asthma</option>
+          <option value="obesity">Obesity</option>
+          <option value="arthritis">Arthritis</option>
+          <option value="anxiety">Anxiety / Stress</option>
+          <option value="thyroid">Thyroid</option>
+          <option value="pcod">PCOD / PCOS</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="sec-hdr"><div class="sec-hdr-pill" id="lbl-apikey">🔑 Groq API Key</div><div class="sec-hdr-line"></div></div>
+  <div class="sett-card">
+    <div class="api-row">
+      <input class="sett-input" type="password" id="api-key-inp" placeholder="gsk_... your key"/>
+      <button class="api-save" onclick="saveKey()">Save</button>
+    </div>
+    <div class="api-note" id="api-note">Get free key at <span>console.groq.com</span></div>
+    <div class="api-note hidden" id="api-ok" style="color:#06d6a0;margin-top:8px">✅ Key saved!</div>
+  </div>
+  <div class="sec-hdr"><div class="sec-hdr-pill" id="lbl-data">🗂️ Data</div><div class="sec-hdr-line"></div></div>
+  <div class="sett-card">
+    <button class="data-btn" onclick="exportData()">📤 Export JSON</button>
+    <button class="data-btn danger" onclick="clearData()">🗑️ Clear All Data</button>
+  </div>
+</div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="bnav-btn active" onclick="goPage('home',this)"><span class="ni">🏠</span><span class="nt" id="nt-home">Home</span></button>
+  <button class="bnav-btn" onclick="goPage('ai',this)"><span class="ni">🤖</span><span class="nt" id="nt-ai">AI</span></button>
+  <button class="bnav-btn" onclick="goPage('yoga',this);renderYoga()"><span class="ni">🧘</span><span class="nt" id="nt-yoga">Yoga</span></button>
+  <button class="bnav-btn" onclick="goPage('diet',this);renderDiet()"><span class="ni">🥗</span><span class="nt" id="nt-diet">Diet</span></button>
+  <button class="bnav-btn" onclick="goPage('wellness',this)"><span class="ni">💧</span><span class="nt" id="nt-well">Wellness</span></button>
+  <button class="bnav-btn" onclick="goPage('history',this)"><span class="ni">📈</span><span class="nt" id="nt-hist">History</span></button>
+  <button class="bnav-btn" onclick="goPage('settings',this)"><span class="ni">⚙️</span><span class="nt" id="nt-sett">Settings</span></button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════ DATA ══════════════════════════════════════
+let LANG='en', GROQ='', AI_TAB='analysis', OPEN_V=null;
+let YOGA_COND='general', DIET_COND='general', DIET_TAB='diabetes';
+let MED_INTERVAL=null, MED_RUNNING=false, MED_REMAINING=300, MED_TOTAL=300;
+let SLEEP_Q='good', WATER_COUNT=0, STEPS_TODAY=0;
+
+const VITAL_CFG=[
+  {id:'hr',icon:'❤️',c1:'var(--hr)',c2:'var(--hr2)',name:{en:'Heart Rate',kn:'ಹೃದಯ ಬಡಿತ',hi:'हृदय गति'},unit:'BPM',ph:{en:'e.g. 72',kn:'ಉದಾ. 72',hi:'जैसे 72'},fields:[{k:'bpm',lbl:{en:'BPM',kn:'BPM',hi:'BPM'},t:'number'}],status(e){const v=+e.bpm;return v<60?'low':v>100?'high':'normal'}},
+  {id:'bp',icon:'🩺',c1:'var(--bp)',c2:'var(--bp2)',name:{en:'Blood Pressure',kn:'ರಕ್ತದೊತ್ತಡ',hi:'रक्तचाप'},unit:'mmHg',ph:{en:'Systolic',kn:'ಸಿಸ್ಟೋಲಿಕ್',hi:'सिस्टोलिक'},fields:[{k:'sys',lbl:{en:'Systolic',kn:'ಸಿಸ್ಟೋಲಿಕ್',hi:'सिस्टोलिक'},t:'number'},{k:'dia',lbl:{en:'Diastolic',kn:'ಡಯಾಸ್ಟೋಲಿಕ್',hi:'डायस्टोलिक'},t:'number'}],status(e){const s=+e.sys,d=+e.dia;return(s>=140||d>=90)?'high':(s<90||d<60)?'low':'normal'}},
+  {id:'sg',icon:'🍬',c1:'var(--sg)',c2:'var(--sg2)',name:{en:'Blood Sugar',kn:'ರಕ್ತದ ಸಕ್ಕರೆ',hi:'रक्त शर्करा'},unit:'mg/dL',ph:{en:'e.g. 95',kn:'ಉದಾ. 95',hi:'जैसे 95'},fields:[{k:'g',lbl:{en:'mg/dL',kn:'mg/dL',hi:'mg/dL'},t:'number'}],status(e){const v=+e.g;return v>140?'high':v<70?'low':'normal'}},
+  {id:'ox',icon:'💨',c1:'var(--ox)',c2:'var(--ox2)',name:{en:'SpO₂',kn:'ಆಮ್ಲಜನಕ',hi:'ऑक्सीजन'},unit:'%',ph:{en:'e.g. 98',kn:'ಉದಾ. 98',hi:'जैसे 98'},fields:[{k:'s',lbl:{en:'%',kn:'%',hi:'%'},t:'number'}],status(e){return+e.s<95?'low':'normal'}},
+  {id:'tp',icon:'🌡️',c1:'var(--tp)',c2:'var(--tp2)',name:{en:'Temperature',kn:'ತಾಪಮಾನ',hi:'तापमान'},unit:'°F',ph:{en:'e.g. 98.6',kn:'ಉದಾ. 98.6',hi:'जैसे 98.6'},fields:[{k:'t',lbl:{en:'°F',kn:'°F',hi:'°F'},t:'number',step:.1}],status(e){const v=+e.t;return v>99.5?'high':v<97?'low':'normal'}},
+  {id:'wt',icon:'⚖️',c1:'var(--wt)',c2:'var(--wt2)',name:{en:'Weight / BMI',kn:'ತೂಕ / BMI',hi:'वजन / BMI'},unit:'kg',ph:{en:'e.g. 70',kn:'ಉದಾ. 70',hi:'जैसे 70'},fields:[{k:'w',lbl:{en:'Weight (kg)',kn:'ತೂಕ (kg)',hi:'वजन (kg)'},t:'number',step:.1},{k:'h',lbl:{en:'Height (cm)',kn:'ಎತ್ತರ (cm)',hi:'ऊंचाई (cm)'},t:'number'}],status(e){return'normal'}},
+];
+
+// ══════════════════════════════════════ YOGA DATA ══════════════════════════════════════
+const YOGA_DATA = {
+  general: {
+    label: '🌟 General Wellness',
+    color: '#43aa8b',
+    poses: [
+      {
+        name: 'Tadasana (Mountain Pose)',
+        icon: '🧍',
+        duration: '5 min',
+        benefit: 'Improves posture, balance & awareness',
+        steps: [
+          'Stand with feet together, big toes touching. Lift and spread toes.',
+          'Distribute weight evenly across both feet.',
+          'Engage thigh muscles, lift kneecaps without locking knees.',
+          'Lengthen tailbone toward floor, lift sternum.',
+          'Arms by sides, palms forward. Breathe deeply for 1 minute.'
+        ],
+        tips: ['Best done barefoot on even surface','Practice near wall for balance','Breathe deeply — 4 counts in, 4 counts out']
+      },
+      {
+        name: 'Balasana (Child\'s Pose)',
+        icon: '🙇',
+        duration: '3-5 min',
+        benefit: 'Releases tension, calms the nervous system',
+        steps: [
+          'Kneel on floor, big toes touching, knees hip-width apart.',
+          'Exhale and lower torso between thighs.',
+          'Extend arms forward OR rest them by sides.',
+          'Rest forehead gently on the floor.',
+          'Breathe slowly and let go of tension.'
+        ],
+        tips: ['Place a pillow under your forehead if needed','Great before sleep to calm mind','Hold for up to 5 minutes']
+      },
+      {
+        name: 'Vrikshasana (Tree Pose)',
+        icon: '🌳',
+        duration: '3 min each side',
+        benefit: 'Builds balance, concentration & leg strength',
+        steps: [
+          'Stand in Tadasana. Shift weight to left foot.',
+          'Bend right knee, place sole of right foot on inner left thigh.',
+          'Press foot and thigh together for balance.',
+          'Bring palms together at heart or raise arms overhead.',
+          'Hold 30 seconds, then switch sides.'
+        ],
+        tips: ['Focus your gaze on a fixed point','Use wall for support initially','Don\'t place foot directly on knee joint']
+      }
+    ]
+  },
+  diabetes: {
+    label: '🍬 Diabetes',
+    color: '#f9c74f',
+    poses: [
+      {
+        name: 'Dhanurasana (Bow Pose)',
+        icon: '🏹',
+        duration: '20-30 sec x 3',
+        benefit: 'Stimulates pancreas, helps regulate blood sugar',
+        steps: [
+          'Lie on stomach, chin on floor, arms at sides.',
+          'Bend knees, bring heels toward buttocks.',
+          'Reach back and hold ankles with hands.',
+          'Inhale and lift chest and thighs off floor.',
+          'Balance on abdomen, breathe steadily.'
+        ],
+        tips: ['Practice on empty stomach','Avoid if you have back injury','Excellent for pancreas stimulation']
+      },
+      {
+        name: 'Paschimottanasana (Seated Forward Bend)',
+        icon: '🤸',
+        duration: '1-2 min',
+        benefit: 'Massages abdominal organs, improves insulin sensitivity',
+        steps: [
+          'Sit with legs extended straight in front.',
+          'Inhale, lengthen spine upward.',
+          'Exhale, hinge from hips and fold forward.',
+          'Hold shins, ankles, or feet — wherever comfortable.',
+          'Keep spine as long as possible. Hold and breathe.'
+        ],
+        tips: ['Bend knees slightly if hamstrings are tight','Focus on lengthening spine, not reaching feet','Do after meals are digested (3+ hours)']
+      },
+      {
+        name: 'Ardha Matsyendrasana (Spinal Twist)',
+        icon: '🔄',
+        duration: '30 sec each side',
+        benefit: 'Massages liver and pancreas, aids digestion',
+        steps: [
+          'Sit with legs extended. Bend right knee, cross foot over left thigh.',
+          'Bend left knee, bring left heel near right hip.',
+          'Inhale to lengthen spine. Exhale, twist right.',
+          'Place left elbow outside right knee. Right hand behind you.',
+          'Hold and breathe. Switch sides.'
+        ],
+        tips: ['Always twist from base of spine upward','Great for managing blood glucose','Practice morning on empty stomach']
+      }
+    ]
+  },
+  hypertension: {
+    label: '🩺 Hypertension',
+    color: '#4361ee',
+    poses: [
+      {
+        name: 'Shavasana (Corpse Pose)',
+        icon: '🧎',
+        duration: '10-15 min',
+        benefit: 'Lowers blood pressure, deeply relaxes nervous system',
+        steps: [
+          'Lie flat on back, legs slightly apart, arms at sides palms up.',
+          'Close eyes. Take a deep breath in.',
+          'Exhale slowly. Let your body sink into the floor.',
+          'Relax every muscle from toes to face.',
+          'Stay completely still. Focus only on breathing.'
+        ],
+        tips: ['Use an eye pillow for deeper relaxation','Best at end of any yoga session','Helps reduce cortisol (stress hormone)']
+      },
+      {
+        name: 'Sukhasana (Easy Pose Breathing)',
+        icon: '🧘',
+        duration: '10 min',
+        benefit: 'Calms mind, reduces stress-induced hypertension',
+        steps: [
+          'Sit cross-legged on floor or cushion.',
+          'Straighten spine, relax shoulders.',
+          'Place hands on knees in Chin Mudra.',
+          'Inhale for 4 counts, hold for 4, exhale for 6.',
+          'Continue this pattern for 10 minutes.'
+        ],
+        tips: ['Practice twice daily for best results','Avoid inversions (headstand) with hypertension','Focus on slow exhalation — it activates the vagus nerve']
+      },
+      {
+        name: 'Viparita Karani (Legs Up The Wall)',
+        icon: '🦵',
+        duration: '5-10 min',
+        benefit: 'Reduces blood pressure, improves circulation',
+        steps: [
+          'Place yoga mat near a wall.',
+          'Sit sideways to wall, then swing legs up as you lie back.',
+          'Bring buttocks as close to wall as comfortable.',
+          'Arms relaxed at sides, palms up.',
+          'Close eyes and breathe naturally for 5-10 minutes.'
+        ],
+        tips: ['Avoid with severe hypertension — consult doctor','Place a folded blanket under hips','One of the best restorative poses']
+      }
+    ]
+  },
+  heart: {
+    label: '❤️ Heart Disease',
+    color: '#ff4d6d',
+    poses: [
+      {
+        name: 'Pranayama (Deep Breathing)',
+        icon: '🌬️',
+        duration: '10-15 min',
+        benefit: 'Strengthens heart, improves oxygen circulation',
+        steps: [
+          'Sit comfortably with spine straight.',
+          'Place one hand on chest, one on abdomen.',
+          'Inhale deeply through nose for 4 counts.',
+          'Feel abdomen expand first, then chest.',
+          'Exhale slowly for 6-8 counts. Repeat.'
+        ],
+        tips: ['Most important practice for heart health','Always gentle — never strain','Consult cardiologist before starting yoga with heart disease']
+      },
+      {
+        name: 'Tadasana with Arms (Standing Stretch)',
+        icon: '🙆',
+        duration: '5 min',
+        benefit: 'Gentle heart opener, improves circulation',
+        steps: [
+          'Stand in Tadasana, feet together.',
+          'Inhale, raise arms overhead, interlace fingers.',
+          'Turn palms upward, stretch up and slightly back.',
+          'Open chest gently. Hold 5 breaths.',
+          'Exhale, lower arms slowly.'
+        ],
+        tips: ['Keep movements slow and gentle','Never push through chest pain or shortness of breath','Always warm up before any pose']
+      },
+      {
+        name: 'Yoga Nidra (Yogic Sleep)',
+        icon: '🌙',
+        duration: '20-30 min',
+        benefit: 'Reduces heart rate, deeply restores the body',
+        steps: [
+          'Lie down comfortably in Shavasana.',
+          'Close eyes. Resolve not to sleep.',
+          'Rotate awareness through each body part.',
+          'Visualize peaceful imagery.',
+          'Follow a guided Yoga Nidra audio.'
+        ],
+        tips: ['Use a guided recording for best results','Deeply therapeutic for heart recovery','Can be practiced even in bed']
+      }
+    ]
+  },
+  asthma: {
+    label: '💨 Asthma',
+    color: '#7209b7',
+    poses: [
+      {
+        name: 'Bhujangasana (Cobra Pose)',
+        icon: '🐍',
+        duration: '15-20 sec x 3',
+        benefit: 'Opens chest, strengthens lungs',
+        steps: [
+          'Lie face down, hands under shoulders.',
+          'Press tops of feet and thighs into floor.',
+          'Inhale and slowly lift chest off floor.',
+          'Keep elbows slightly bent, shoulders away from ears.',
+          'Hold, breathe, then exhale and lower.'
+        ],
+        tips: ['Excellent for expanding chest and lung capacity','Avoid during active asthma attack','Practice in clean, well-ventilated space']
+      },
+      {
+        name: 'Anulom Vilom (Alternate Nostril Breathing)',
+        icon: '👃',
+        duration: '10 min',
+        benefit: 'Clears respiratory passages, balances breathing',
+        steps: [
+          'Sit comfortably. Use right hand: thumb on right nostril, ring finger on left.',
+          'Close right nostril with thumb. Inhale through left for 4 counts.',
+          'Close both nostrils, hold for 4 counts.',
+          'Release right nostril, exhale for 8 counts.',
+          'Inhale through right, hold, exhale through left. Repeat.'
+        ],
+        tips: ['Most powerful breathing exercise for asthma','Practice daily for best results','Start with 5 rounds, build to 20+']
+      },
+      {
+        name: 'Ustrasana (Camel Pose)',
+        icon: '🐪',
+        duration: '20-30 sec x 2',
+        benefit: 'Opens chest and airways, improves lung expansion',
+        steps: [
+          'Kneel with knees hip-width apart.',
+          'Place hands on lower back, fingers pointing down.',
+          'Inhale, lift chest and gently arch backward.',
+          'If comfortable, reach hands back to hold heels.',
+          'Breathe deeply in the pose.'
+        ],
+        tips: ['Tuck toes under for easier reach to heels','Never strain the neck','Use blocks if heels are out of reach']
+      }
+    ]
+  },
+  obesity: {
+    label: '⚖️ Obesity',
+    color: '#f4845f',
+    poses: [
+      {
+        name: 'Surya Namaskar (Sun Salutation)',
+        icon: '☀️',
+        duration: '12 rounds',
+        benefit: 'Full-body workout, boosts metabolism',
+        steps: [
+          'Start in Pranamasana (prayer pose).',
+          'Hasta Uttanasana: raise arms overhead, arch back.',
+          'Uttanasana: fold forward, hands to floor.',
+          'Ashwa Sanchalanasana: step right foot back.',
+          'Continue all 12 poses in sequence. Repeat other side.'
+        ],
+        tips: ['Best weight-loss yoga practice','Start with 2-4 rounds, build to 12','Excellent cardio when done at pace']
+      },
+      {
+        name: 'Navasana (Boat Pose)',
+        icon: '🚣',
+        duration: '30 sec x 5',
+        benefit: 'Strengthens core, stimulates thyroid & kidney',
+        steps: [
+          'Sit with knees bent, feet flat on floor.',
+          'Lean back slightly, lift feet so thighs are at 45°.',
+          'Straighten legs if possible. Arms extended forward.',
+          'Balance on sit bones. Keep spine straight.',
+          'Hold 30 seconds, release, repeat.'
+        ],
+        tips: ['Excellent for belly fat reduction','Keep breathing — do not hold breath','Use a strap around feet if needed']
+      },
+      {
+        name: 'Trikonasana (Triangle Pose)',
+        icon: '📐',
+        duration: '30 sec each side',
+        benefit: 'Stretches sides, reduces waist fat, improves digestion',
+        steps: [
+          'Stand with feet 3-4 feet apart.',
+          'Turn right foot out 90°, left foot in slightly.',
+          'Extend arms out at shoulder height.',
+          'Inhale, then exhale and reach right hand to right shin or floor.',
+          'Left arm extends toward ceiling. Look up at left hand.'
+        ],
+        tips: ['Use a block under lower hand','Great for love handles and waist','Practice both sides equally']
+      }
+    ]
+  },
+  anxiety: {
+    label: '🧠 Anxiety / Stress',
+    color: '#5e60ce',
+    poses: [
+      {
+        name: 'Balasana (Extended Child\'s Pose)',
+        icon: '🙇',
+        duration: '5 min',
+        benefit: 'Instantly calms the nervous system',
+        steps: [
+          'Kneel and sit back on heels.',
+          'Walk hands forward, lower forehead to mat.',
+          'Extend arms fully forward.',
+          'Breathe slowly and deeply into the back body.',
+          'Each exhale, let go of worry and tension.'
+        ],
+        tips: ['Add a heating pad on the lower back for extra comfort','Ideal when feeling overwhelmed','Pair with 4-7-8 breathing for best effect']
+      },
+      {
+        name: '4-7-8 Breathing',
+        icon: '🌬️',
+        duration: '5-10 min',
+        benefit: 'Activates parasympathetic nervous system, reduces anxiety',
+        steps: [
+          'Sit or lie down comfortably.',
+          'Exhale completely through mouth.',
+          'Inhale quietly through nose for 4 counts.',
+          'Hold breath for 7 counts.',
+          'Exhale forcefully through mouth for 8 counts. Repeat 4x.'
+        ],
+        tips: ['Proven to reduce anxiety in minutes','Practice before bed for better sleep','Start with 2 cycles, build to 4']
+      },
+      {
+        name: 'Janu Sirsasana (Head-to-Knee Pose)',
+        icon: '🧘',
+        duration: '1-2 min each side',
+        benefit: 'Calms brain, relieves anxiety, mild depression',
+        steps: [
+          'Sit with legs extended. Bend right knee, foot against inner left thigh.',
+          'Inhale and lengthen spine.',
+          'Exhale and fold forward over left leg.',
+          'Hold foot or shin. Rest forehead on leg if possible.',
+          'Breathe deeply. Switch sides.'
+        ],
+        tips: ['Calming, not stimulating','Practice in quiet space','Use a strap if you can\'t reach foot']
+      }
+    ]
+  },
+  arthritis: {
+    label: '🦴 Arthritis',
+    color: '#90e0c8',
+    poses: [
+      {
+        name: 'Marjaryasana-Bitilasana (Cat-Cow)',
+        icon: '🐄',
+        duration: '5 min',
+        benefit: 'Lubricates joints, improves spine flexibility',
+        steps: [
+          'Start on hands and knees (tabletop position).',
+          'Inhale: drop belly, lift tailbone and head (Cow).',
+          'Exhale: round spine toward ceiling, drop head (Cat).',
+          'Flow gently between the two.',
+          'Move at your own pace for 5 minutes.'
+        ],
+        tips: ['Place a folded blanket under knees','Move only within pain-free range','Excellent for morning joint stiffness']
+      },
+      {
+        name: 'Finger & Wrist Yoga',
+        icon: '🤲',
+        duration: '5 min',
+        benefit: 'Reduces joint stiffness and pain in hands',
+        steps: [
+          'Sit comfortably. Extend arms forward.',
+          'Spread fingers wide, then make a gentle fist.',
+          'Rotate wrists in circles — 5 each direction.',
+          'Tap each finger to thumb rapidly.',
+          'Massage each finger joint gently.'
+        ],
+        tips: ['Practice in warm water if fingers are stiff','Never force movement past pain','Great for morning routine']
+      },
+      {
+        name: 'Virabhadrasana I (Warrior I - Modified)',
+        icon: '⚔️',
+        duration: '30 sec each side',
+        benefit: 'Strengthens muscles around joints, improves stability',
+        steps: [
+          'Stand near a chair for support.',
+          'Step right foot back 3 feet.',
+          'Bend left knee over ankle.',
+          'Raise arms or rest hands on chair.',
+          'Hold 30 seconds, switch sides.'
+        ],
+        tips: ['Always use chair/wall support initially','Build strength gradually','Chair yoga version is completely valid']
+      }
+    ]
+  },
+  pcod: {
+    label: '🌸 PCOD / PCOS',
+    color: '#f4a0c0',
+    poses: [
+      {
+        name: 'Baddha Konasana (Butterfly Pose)',
+        icon: '🦋',
+        duration: '5 min',
+        benefit: 'Stimulates ovaries, improves pelvic circulation',
+        steps: [
+          'Sit with spine straight. Bend knees, bring soles of feet together.',
+          'Hold feet with hands. Let knees fall toward floor.',
+          'Gently flap knees like butterfly wings.',
+          'Then hold still, press knees gently toward floor.',
+          'Breathe deeply for 5 minutes.'
+        ],
+        tips: ['Excellent for hormonal balance','Practice daily for best results','Use cushion under hips for comfort']
+      },
+      {
+        name: 'Setu Bandhasana (Bridge Pose)',
+        icon: '🌉',
+        duration: '30 sec x 5',
+        benefit: 'Stimulates thyroid, strengthens pelvic floor',
+        steps: [
+          'Lie on back, knees bent, feet hip-width apart.',
+          'Arms alongside body, palms down.',
+          'Inhale and lift hips off floor.',
+          'Clasp hands under body, roll shoulders under.',
+          'Hold 30 seconds, exhale and lower slowly.'
+        ],
+        tips: ['Excellent for hormonal regulation','Strengthens uterine muscles','Place a block under hips for supported version']
+      },
+      {
+        name: 'Supta Matsyendrasana (Supine Twist)',
+        icon: '🌀',
+        duration: '1 min each side',
+        benefit: 'Detoxifies reproductive organs, reduces bloating',
+        steps: [
+          'Lie on back. Draw right knee to chest.',
+          'Cross right knee over body to the left.',
+          'Extend right arm out to right side.',
+          'Turn head to the right if comfortable.',
+          'Hold 1 minute. Switch sides.'
+        ],
+        tips: ['Place pillow under knee for support','Practice during non-menstrual days only','Excellent for detoxification']
+      }
+    ]
+  },
+  thyroid: {
+    label: '🦋 Thyroid',
+    color: '#74c69d',
+    poses: [
+      {
+        name: 'Sarvangasana (Shoulder Stand)',
+        icon: '🙃',
+        duration: '1-3 min',
+        benefit: 'Directly stimulates thyroid gland',
+        steps: [
+          'Lie on back. Inhale and lift legs to 90°.',
+          'Lift hips, support with hands on lower back.',
+          'Bring body to vertical position.',
+          'Chin pressed to chest (chin lock).',
+          'Hold and breathe. Lower slowly.'
+        ],
+        tips: ['MOST important pose for thyroid health','Avoid with neck issues — use wall variation','Chin-lock stimulates thyroid directly']
+      },
+      {
+        name: 'Matsyasana (Fish Pose)',
+        icon: '🐟',
+        duration: '30-60 sec',
+        benefit: 'Stretches throat/thyroid region, counter-pose to shoulderstand',
+        steps: [
+          'Lie on back, legs extended.',
+          'Place hands under buttocks, palms down.',
+          'Inhale, lift chest and arch back.',
+          'Rest crown of head on floor.',
+          'Breathe deeply through chest.'
+        ],
+        tips: ['Always follow shoulderstand with fish pose','Opens throat chakra region','Place block under head if neck is sensitive']
+      },
+      {
+        name: 'Ujjayi Pranayama (Ocean Breath)',
+        icon: '🌊',
+        duration: '10 min',
+        benefit: 'Regulates thyroid function through throat activation',
+        steps: [
+          'Sit comfortably with spine straight.',
+          'Inhale through nose. Slightly constrict throat.',
+          'Create a soft ocean-sound during inhalation and exhalation.',
+          'Breathe slowly — about 5-6 breaths per minute.',
+          'Continue for 10 minutes.'
+        ],
+        tips: ['Sounds like Darth Vader breathing','Generates internal heat','Particularly beneficial for hypothyroidism']
+      }
+    ]
+  }
+};
+
+// ══════════════════════════════════════ DIET DATA ══════════════════════════════════════
+const DIET_DATA = {
+  diabetes: {
+    label: '🍬 Diabetes Diet',
+    color: '#f9c74f',
+    breakfast: {
+      title: 'Diabetes-Friendly Breakfast',
+      time: '7:00 - 8:30 AM',
+      desc: 'Low glycemic, high fiber breakfast to stabilize morning blood sugar.',
+      eat: ['Oats porridge','Moong dal chilla','Sprouts','Almonds (6-8)','Methi leaves','Green tea'],
+      avoid: ['White bread','Sweet cereals','Fruit juices','Full-fat milk','Sugary chai'],
+      moderate: ['1 roti (whole wheat)','1 small banana'],
+      nutrients: ['High fiber','Low GI','Protein-rich','Complex carbs']
+    },
+    lunch: {
+      title: 'Diabetes-Friendly Lunch',
+      time: '12:30 - 1:30 PM',
+      desc: 'Balanced plate with focus on fiber and protein to prevent glucose spikes.',
+      eat: ['Brown rice (small portion)','Dal','Bitter gourd (karela)','Spinach','Cucumber salad','Curd (low-fat)'],
+      avoid: ['White rice (large portions)','Fried items','Pickles (high salt)','Maida rotis','Sweets'],
+      moderate: ['2 whole wheat rotis','1 small potato'],
+      nutrients: ['High fiber','Lean protein','Vitamins & minerals','Complex carbs']
+    },
+    dinner: {
+      title: 'Light Diabetes Dinner',
+      time: '7:00 - 8:00 PM',
+      desc: 'Lightest meal of the day. Focus on vegetables and protein. No heavy carbs after 7 PM.',
+      eat: ['Vegetable soup','Stir-fried vegetables','Paneer (small portion)','Salad','Dahi','Bitter gourd sabzi'],
+      avoid: ['Rice at night','Sweet desserts','Deep fried snacks','Heavy gravies','Ice cream'],
+      moderate: ['1 roti','Small portion pulses'],
+      nutrients: ['Light on carbs','High vegetable content','Good protein']
+    },
+    snacks: {
+      title: 'Healthy Snack Options',
+      time: '10 AM & 4 PM',
+      desc: 'Essential to eat small snacks between meals to prevent blood sugar drops.',
+      eat: ['Roasted chana','Handful of nuts','Apple with peanut butter','Cucumber sticks','Sprouts','Makhana (fox nuts)'],
+      avoid: ['Biscuits','Namkeen (fried)','Cake or cookies','Fruit juice','Chips'],
+      moderate: ['1 fruit','Dhokla'],
+      nutrients: ['Low GI snacks','Fiber-rich','Protein-rich']
+    }
+  },
+  hypertension: {
+    label: '🩺 Hypertension Diet',
+    color: '#4361ee',
+    breakfast: {
+      title: 'Heart-Healthy Breakfast',
+      time: '7:00 - 8:00 AM',
+      desc: 'DASH diet principles — low sodium, high potassium breakfast.',
+      eat: ['Banana','Oatmeal with berries','Low-fat yogurt','Flaxseed','Pomegranate juice (small)','Herbal tea'],
+      avoid: ['Salted butter','Papad','Pickles','Processed cheese','Salty snacks'],
+      moderate: ['1-2 whole wheat toast','1 egg'],
+      nutrients: ['Low sodium','High potassium','High magnesium','Omega-3']
+    },
+    lunch: {
+      title: 'Low-Sodium Lunch',
+      time: '12:30 - 2:00 PM',
+      desc: 'Maximum vegetables, minimum salt. Use lemon/herbs for flavor instead of salt.',
+      eat: ['Brown rice','Mixed dal','Palak paneer (low oil)','Beet salad','Garlic (natural BP reducer)','Onion'],
+      avoid: ['Salty curries','Papad','Pickles','Salted lassi','Canned foods'],
+      moderate: ['2 rotis','Small portion rice'],
+      nutrients: ['DASH diet','Potassium-rich','Low sodium','Magnesium-rich']
+    },
+    dinner: {
+      title: 'Light Hypertension Dinner',
+      time: '6:30 - 7:30 PM',
+      desc: 'Early, light dinner. High potassium vegetables, omega-3 sources.',
+      eat: ['Vegetable khichdi (low salt)','Steamed vegetables','Raita (low-fat)','Bottle gourd','Walnut (2-3)','Celery'],
+      avoid: ['Very salty food','Heavy meat dishes','Alcohol','Fried foods','Caffeinated drinks'],
+      moderate: ['Dahi rice (small portion)'],
+      nutrients: ['Potassium-rich','Magnesium-rich','Low sodium','Omega-3']
+    },
+    snacks: {
+      title: 'BP-Friendly Snacks',
+      time: '10 AM & 4 PM',
+      desc: 'Fresh fruits and unsalted nuts are ideal between meals.',
+      eat: ['Banana','Unsalted almonds','Berries','Celery with hummus','Pomegranate','Coconut water'],
+      avoid: ['Namkeen','Salted chips','Biscuits with salt','Salty popcorn'],
+      moderate: ['Lassi (no salt)','1 fruit'],
+      nutrients: ['Potassium-rich','Natural diuretics','Low sodium']
+    }
+  },
+  general: {
+    label: '🌟 Balanced Diet',
+    color: '#06d6a0',
+    breakfast: {
+      title: 'Balanced Power Breakfast',
+      time: '7:00 - 8:30 AM',
+      desc: 'Start your day with protein, complex carbs, and healthy fats.',
+      eat: ['Eggs or paneer','Oats/upma','Fruit (seasonal)','Mixed nuts','Green tea','Sprouts'],
+      avoid: ['Sugary cereals','White bread with jam','Packaged juices','Fried parathas'],
+      moderate: ['1-2 whole wheat rotis','Full-fat milk'],
+      nutrients: ['Protein-rich','Complex carbs','Healthy fats','Vitamins']
+    },
+    lunch: {
+      title: 'Complete Balanced Lunch',
+      time: '12:30 - 2:00 PM',
+      desc: 'The plate method: Half vegetables, quarter protein, quarter grains.',
+      eat: ['Dal','Seasonal sabzi','Salad','Curd','1-2 rotis or small bowl rice','Buttermilk'],
+      avoid: ['Deep fried items','Excess oil','Maida-based foods','Soft drinks'],
+      moderate: ['Rice (1 katori)','Potato dishes','Paneer'],
+      nutrients: ['All macronutrients','Fiber-rich','Probiotic (curd)','Antioxidants']
+    },
+    dinner: {
+      title: 'Light Nutritious Dinner',
+      time: '7:00 - 8:00 PM',
+      desc: 'Keep it light. Eat at least 2 hours before sleep.',
+      eat: ['Dal soup or khichdi','Steamed vegetables','Salad','Raita','Light sabzi','Chaach'],
+      avoid: ['Heavy biryanis','Deep fried food','Sweets','Ice cream','Heavy dals at night'],
+      moderate: ['1-2 rotis','Small portion rice','Pulses'],
+      nutrients: ['Easy to digest','Light on stomach','Good protein']
+    },
+    snacks: {
+      title: 'Healthy Indian Snacks',
+      time: '10:30 AM & 4:30 PM',
+      desc: 'Nutritious snacking prevents overeating at meal times.',
+      eat: ['Roasted makhana','Mixed nuts','Fresh fruit','Idli/dhokla','Sprouts','Coconut water','Chaach'],
+      avoid: ['Samosa','Pakoda','Chips','Biscuits','Sweets','Cold drinks'],
+      moderate: ['Poha','Upma','Murmura bhel'],
+      nutrients: ['Fiber-rich','Protein-rich','Healthy fats','Hydrating']
+    }
+  },
+  heart: {
+    label: '❤️ Heart Disease Diet',
+    color: '#ff4d6d',
+    breakfast: {
+      title: 'Cardio-Protective Breakfast',
+      time: '7:00 - 8:00 AM',
+      desc: 'Omega-3 rich, low saturated fat, high fiber breakfast for heart health.',
+      eat: ['Oatmeal with flaxseeds','Walnuts (4-5)','Apple','Berries','Green tea','Low-fat milk'],
+      avoid: ['Eggs (yolk in excess)','Butter','Full-fat paneer','Fried items','Cheese'],
+      moderate: ['1 whole egg','1 piece whole grain toast'],
+      nutrients: ['Omega-3 rich','High fiber','Low saturated fat','Antioxidants']
+    },
+    lunch: {
+      title: 'Heart-Smart Lunch',
+      time: '12:00 - 1:30 PM',
+      desc: 'Mediterranean-inspired Indian lunch with olive oil, fish, and legumes.',
+      eat: ['Fish (salmon/rawa/pomfret)','Brown rice','Rajma or moong dal','Palak','Tomato-onion salad','Olive oil (1 tsp)'],
+      avoid: ['Red meat','Full cream dairy','Coconut oil (excess)','Fried snacks','Refined flour'],
+      moderate: ['Lean chicken','2 rotis (whole wheat)'],
+      nutrients: ['Omega-3','Plant sterols','Fiber','Lean protein']
+    },
+    dinner: {
+      title: 'Light Cardio-Friendly Dinner',
+      time: '6:30 - 7:30 PM',
+      desc: 'Light, easy dinner. Eat early. Avoid heavy meals that stress the heart at night.',
+      eat: ['Vegetable soup','Steamed fish or tofu','Salad with lemon','Raita','Stir-fried veggies'],
+      avoid: ['Red meat','Heavy gravies','Alcohol','Salt (excess)','Fried foods'],
+      moderate: ['1 roti','Small dal portion'],
+      nutrients: ['Heart-protective','Low sodium','Anti-inflammatory','Omega-3']
+    },
+    snacks: {
+      title: 'Heart-Friendly Snacks',
+      time: '10 AM & 4 PM',
+      desc: 'Nuts, fruits and seeds are the best heart-healthy snack options.',
+      eat: ['Walnuts','Almonds','Flaxseeds (1 tsp)','Pomegranate','Blueberries','Dark chocolate (small piece)'],
+      avoid: ['Fried snacks','Bakery items','Salted chips','Sweets'],
+      moderate: ['Coconut water','1 fruit'],
+      nutrients: ['Omega-3','Polyphenols','Heart-protective','Antioxidants']
+    }
+  },
+  obesity: {
+    label: '⚖️ Weight Loss Diet',
+    color: '#f4845f',
+    breakfast: {
+      title: 'Metabolism-Boosting Breakfast',
+      time: '7:00 - 8:00 AM',
+      desc: 'High protein breakfast reduces hunger hormones and boosts metabolism.',
+      eat: ['Boiled eggs (2-3 whites)','Moong dal chilla','Sprouts','Fruit (1 small)','Green tea/black coffee','Almonds'],
+      avoid: ['Paratha with butter','Sugary tea','Fruit juices','Upma with excess oil','White bread'],
+      moderate: ['1 whole egg','Oats'],
+      nutrients: ['High protein','Low calorie','High fiber','Metabolism-boosting']
+    },
+    lunch: {
+      title: 'Calorie-Controlled Lunch',
+      time: '12:30 - 1:30 PM',
+      desc: 'Large salad first, then small portion of cooked food. Eat slowly.',
+      eat: ['Large mixed salad','Dal (no tadka)','Grilled/steamed vegetables','Chaach','Cucumber','Leafy greens'],
+      avoid: ['Biryani','Naan','Fried rice','Creamy curries','Papad','Pickles'],
+      moderate: ['1 roti','Small portion brown rice','1 katori dal'],
+      nutrients: ['Low calorie','High fiber','High protein','Nutrient-dense']
+    },
+    dinner: {
+      title: 'Light Weight-Loss Dinner',
+      time: '6:30 - 7:00 PM',
+      desc: 'Eat as early as possible. Your lightest meal of the day.',
+      eat: ['Vegetable soup (no cream)','Steamed vegetables','1 boiled egg or tofu','Salad','Raita (low-fat)'],
+      avoid: ['Rice at night','Roti after 7 PM ideally','Sweets','Heavy dals','Full-fat dairy'],
+      moderate: ['1 small roti','Small portion dal'],
+      nutrients: ['Very light','High water content','Lean protein','Low carb']
+    },
+    snacks: {
+      title: 'Weight-Loss Snacks',
+      time: '10 AM & 4 PM',
+      desc: 'Smart snacking prevents binge eating. Keep it under 100-150 calories.',
+      eat: ['Cucumber sticks','Carrots with hummus','Roasted makhana','1 fruit','Chaach','Green tea'],
+      avoid: ['ANY fried food','Biscuits','Namkeen','Sweets','Juice','Energy bars'],
+      moderate: ['Handful unsalted nuts','1 small banana'],
+      nutrients: ['Very low calorie','Filling fiber','Hydrating','Nutrient-rich']
+    }
+  }
+};
+
+const TXT={
+  morning:{en:'morning',kn:'ಬೆಳಿಗ್ಗೆ',hi:'प्रभात'},
+  afternoon:{en:'afternoon',kn:'ಮಧ್ಯಾಹ್ನ',hi:'दोपहर'},
+  evening:{en:'evening',kn:'ಸಂಜೆ',hi:'शाम'},
+  normal:{en:'Normal',kn:'ಸಾಮಾನ್ಯ',hi:'सामान्य'},
+  high:{en:'High',kn:'ಹೆಚ್ಚು',hi:'उच्च'},
+  low:{en:'Low',kn:'ಕಡಿಮೆ',hi:'कम'},
+};
+function tx(k){return(TXT[k]||{})[LANG]||(TXT[k]||{}).en||k}
+
+function gd(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}}
+function sd(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function logs(){return gd('vl')||[]}
+function saveLogs(l){sd('vl',l)}
+function prof(){return gd('vp')||{}}
+function saveProfile(){sd('vp',{name:$('p-name').value,age:$('p-age').value,gender:$('p-gender').value,cond:$('p-cond').value});applyLang()}
+function saveKey(){GROQ=$('api-key-inp').value.trim();sd('gk',GROQ);$('api-ok').classList.remove('hidden');toast('✅ API key saved!');setTimeout(()=>$('api-ok').classList.add('hidden'),3000)}
+function $(id){return document.getElementById(id)}
+function latest(id){const l=logs().filter(x=>x.id===id);return l.length?l[l.length-1]:null}
+
+function dispVal(cfg,e){
+  if(!e)return'––';
+  if(cfg.id==='hr')return e.bpm;
+  if(cfg.id==='bp')return`${e.sys}/${e.dia}`;
+  if(cfg.id==='sg')return e.g;
+  if(cfg.id==='ox')return e.s;
+  if(cfg.id==='tp')return e.t;
+  if(cfg.id==='wt'){if(e.w&&e.h){const b=(+e.w/Math.pow(+e.h/100,2)).toFixed(1);return`${e.w}kg / BMI ${b}`}return e.w+'kg'}
+  return'––';
+}
+
+// ══════════════════════════════════════ LANG ══════════════════════════════════════
+function setLang(l){
+  LANG=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+  document.body.className=l==='kn'?'kn':l==='hi'?'hi':'';
+  applyLang();renderVitals();renderHistory();
+}
+function applyLang(){
+  const h=new Date().getHours();
+  const tod=h<12?'morning':h<17?'afternoon':'evening';
+  const grMap={en:`Good ${tx(tod)} 👋`,kn:`ಶುಭ ${tx(tod)} 👋`,hi:`शुभ ${tx(tod)} 👋`};
+  $('g-sub').textContent=(grMap[LANG]||grMap.en)+' — Log your vitals';
+  const p=prof();
+  $('g-name').textContent=p.name||(LANG==='kn'?'ಆರೋಗ್ಯ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್':LANG==='hi'?'स्वास्थ्य डैशबोर्ड':'Health Dashboard');
+  $('lbl-streak').textContent=LANG==='kn'?'ಸ್ಟ್ರೀಕ್':LANG==='hi'?'स्ट्रीक':'Streak';
+  $('lbl-logs').textContent=LANG==='kn'?'ದಾಖಲೆ':LANG==='hi'?'लॉग्स':'Logs';
+  $('lbl-score').textContent=LANG==='kn'?'ಸ್ಕೋರ್':LANG==='hi'?'स्कोर':'Score';
+  $('lbl-vitals').textContent='📊 '+(LANG==='kn'?'ನನ್ನ ಆರೋಗ್ಯ ಅಂಕಿ':LANG==='hi'?'मेरे मापदंड':'My Vitals');
+  $('lbl-alerts').textContent='🚨 '+(LANG==='kn'?'ಎಚ್ಚರಿಕೆಗಳು':LANG==='hi'?'अलर्ट':'Alerts');
+  $('ai-hero-title').textContent=LANG==='kn'?'AI ಆರೋಗ್ಯ ವಿಶ್ಲೇಷಣೆ':LANG==='hi'?'AI स्वास्थ्य विश्लेषण':'AI Health Analysis';
+  $('lbl-history').textContent='📈 '+(LANG==='kn'?'ಇತಿಹಾಸ':LANG==='hi'?'इतिहास':'History');
+  $('lbl-profile').textContent='👤 '+(LANG==='kn'?'ಪ್ರೊಫೈಲ್':LANG==='hi'?'प्रोफ़ाइल':'Profile');
+  $('lbl-apikey').textContent='🔑 Groq API '+(LANG==='kn'?'ಕೀ':LANG==='hi'?'कुंजी':'Key');
+  $('lbl-data').textContent='🗂️ '+(LANG==='kn'?'ಡೇಟಾ':LANG==='hi'?'डेटा':'Data');
+  $('lbl-name').textContent=LANG==='kn'?'ಹೆಸರು':LANG==='hi'?'नाम':'Name';
+  $('lbl-age').textContent=LANG==='kn'?'ವಯಸ್ಸು':LANG==='hi'?'उम्र':'Age';
+  $('lbl-gender').textContent=LANG==='kn'?'ಲಿಂಗ':LANG==='hi'?'लिंग':'Gender';
+  $('lbl-cond').textContent=LANG==='kn'?'ಸ್ಥಿತಿ':LANG==='hi'?'स्थिति':'Condition';
+  $('nt-home').textContent=LANG==='kn'?'ಮನೆ':LANG==='hi'?'होम':'Home';
+  $('nt-ai').textContent='AI';
+  $('nt-yoga').textContent=LANG==='kn'?'ಯೋಗ':LANG==='hi'?'योग':'Yoga';
+  $('nt-diet').textContent=LANG==='kn'?'ಆಹಾರ':LANG==='hi'?'आहार':'Diet';
+  $('nt-well').textContent=LANG==='kn'?'ಆರೋಗ್ಯ':LANG==='hi'?'वेलनेस':'Wellness';
+  $('nt-hist').textContent=LANG==='kn'?'ಇತಿಹಾಸ':LANG==='hi'?'इतिहास':'History';
+  $('nt-sett').textContent=LANG==='kn'?'ಸೆಟ್ಟಿಂಗ್ಸ್':LANG==='hi'?'सेटिंग्स':'Settings';
+  $('atab-analysis').textContent='🔬 '+(LANG==='kn'?'ವಿಶ್ಲೇಷಣೆ':LANG==='hi'?'विश्लेषण':'Analysis');
+  $('atab-risk').textContent='⚠️ '+(LANG==='kn'?'ಅಪಾಯ':LANG==='hi'?'जोखिम':'Risk');
+  $('atab-diet').textContent='🥗 '+(LANG==='kn'?'ಆಹಾರ':LANG==='hi'?'आहार':'Diet');
+  $('atab-yoga').textContent='🧘 '+(LANG==='kn'?'ಯೋಗ':LANG==='hi'?'योग':'Yoga');
+  $('atab-sleep').textContent='😴 '+(LANG==='kn'?'ನಿದ್ದೆ':LANG==='hi'?'नींद':'Sleep');
+  $('atab-doctor').textContent='👨‍⚕️ '+(LANG==='kn'?'ಡಾಕ್ಟರ್':LANG==='hi'?'डॉक्टर':'Doctor');
+  $('ai-btn-lbl').textContent=LANG==='kn'?'✨ ಆರೋಗ್ಯ ವಿಶ್ಲೇಷಿಸಿ':LANG==='hi'?'✨ स्वास्थ्य विश्लेषण करें':'✨ Analyze My Health';
+}
+
+// ══════════════════════════════════════ VITALS ══════════════════════════════════════
+function renderVitals(){
+  const list=$('vitals-list');list.innerHTML='';
+  VITAL_CFG.forEach(cfg=>{
+    const e=latest(cfg.id);const st=e?cfg.status(e):null;const val=dispVal(cfg,e);const isOpen=OPEN_V===cfg.id;
+    const badgeCls=st==='normal'?'badge-normal':st==='high'?'badge-high':'badge-low';
+    const wrap=document.createElement('div');
+    const row=document.createElement('div');
+    row.className='vital-row'+(isOpen?' open':'');
+    row.style.setProperty('--c1',cfg.c1);row.style.setProperty('--c2',cfg.c2);
+    row.onclick=()=>toggleVital(cfg.id);
+    row.innerHTML=`<div class="vital-icon-wrap">${cfg.icon}</div>
+      <div class="vital-info">
+        <div class="vital-name">${cfg.name[LANG]||cfg.name.en}</div>
+        <div class="vital-reading">${val}</div>
+        <div class="vital-tap-hint"><span class="vital-unit-lbl">${cfg.unit}</span><span style="margin-left:6px;opacity:.5">· ${e?'Tap to update':'Tap to log'}</span><span class="tap-chevron" style="margin-left:auto">›</span></div>
+      </div>
+      ${st?`<div class="vital-badge ${badgeCls}">${tx(st)}</div>`:''}`;
+    wrap.appendChild(row);
+    if(isOpen){
+      const panel=document.createElement('div');panel.className='log-panel';
+      panel.style.setProperty('--c1',cfg.c1);panel.style.setProperty('--c2',cfg.c2);
+      let fhtml=`<div class="log-fields">`;
+      cfg.fields.forEach(f=>{fhtml+=`<div class="log-field"><label>${f.lbl[LANG]||f.lbl.en}</label><input class="log-input" id="li-${cfg.id}-${f.k}" type="${f.t}" ${f.step?`step="${f.step}"`:''}  placeholder="${cfg.ph[LANG]||cfg.ph.en}" style="--c1:${cfg.c1}"/></div>`});
+      fhtml+=`</div><button class="log-save" onclick="doLog('${cfg.id}')">${LANG==='kn'?'ದಾಖಲಿಸಿ':LANG==='hi'?'लॉग करें':'Log Vital'}</button>`;
+      const vLogs=logs().filter(l=>l.id===cfg.id).slice(-7);
+      if(vLogs.length>1){
+        const vals=vLogs.map(l=>{if(cfg.id==='hr')return+l.bpm;if(cfg.id==='bp')return+l.sys;if(cfg.id==='sg')return+l.g;if(cfg.id==='ox')return+l.s;if(cfg.id==='tp')return+l.t;if(cfg.id==='wt')return+l.w;return 0});
+        const mx=Math.max(...vals),mn=Math.min(...vals);
+        fhtml+=`<div class="mini-bars">`;vals.forEach(v=>{const pct=mx===mn?60:20+((v-mn)/(mx-mn))*80;fhtml+=`<div class="mini-bar" style="height:${pct}%;--c1:${cfg.c1};--c2:${cfg.c2}" title="${v}"></div>`});fhtml+=`</div>`;
+      }
+      panel.innerHTML=fhtml;wrap.appendChild(panel);
+    }
+    list.appendChild(wrap);
+  });
+  updateScore();updateAlerts();
+}
+function toggleVital(id){OPEN_V=OPEN_V===id?null:id;renderVitals();if(OPEN_V)setTimeout(()=>{const rows=document.querySelectorAll('.vital-row.open');if(rows.length)rows[0].scrollIntoView({behavior:'smooth',block:'nearest'})},80)}
+function doLog(id){
+  const cfg=VITAL_CFG.find(c=>c.id===id);const entry={id,ts:Date.now()};let ok=true;
+  cfg.fields.forEach(f=>{const el=$(`li-${id}-${f.k}`);if(!el||!el.value.trim()){ok=false;return}entry[f.k]=el.value});
+  if(!ok){toast('⚠️ Fill all fields');return}
+  const l=logs();l.push(entry);saveLogs(l);toast('✅ Logged!');OPEN_V=null;renderVitals();
+}
+function updateScore(){
+  const l=logs();$('h-logs').textContent=l.length;
+  const days=[...new Set(l.map(x=>new Date(x.ts).toDateString()))];let streak=0;const d=new Date();
+  while(days.includes(d.toDateString())){streak++;d.setDate(d.getDate()-1)}
+  $('h-streak').textContent=streak;
+  let sc=0,cnt=0;
+  VITAL_CFG.forEach(c=>{const e=latest(c.id);if(e){const s=c.status(e);sc+=s==='normal'?100:50;cnt++}});
+  $('h-score').textContent=cnt?Math.round(sc/cnt):'–';
+}
+function updateAlerts(){
+  const box=$('alerts-box');const items=[];
+  VITAL_CFG.forEach(c=>{const e=latest(c.id);if(!e)return;const s=c.status(e);if(s==='high'||s==='low')items.push({c,e,s})});
+  if(!items.length){box.innerHTML=`<div class="empty"><div class="empty-icon">✅</div><p>${LANG==='kn'?'ಎಚ್ಚರಿಕೆಗಳಿಲ್ಲ — ಚೆನ್ನಾಗಿ ಇದ್ದೀರಿ!':LANG==='hi'?'कोई अलर्ट नहीं — आप ठीक हैं!':'No alerts — you\'re doing great!'}</p></div>`;return}
+  box.innerHTML=items.map(({c,e,s})=>{const col=s==='high'?'#ff4d6d':'#f9c74f';return`<div class="alert-item" style="--bc:${col}"><div class="alert-stripe" style="background:${col}"></div><div class="alert-body"><div class="alert-title">${c.name[LANG]||c.name.en} — <span style="color:${col}">${tx(s)}</span></div><div class="alert-sub">${dispVal(c,e)} ${c.unit} · ${ago(e.ts)}</div></div><div style="font-size:22px">${s==='high'?'🔴':'🟡'}</div></div>`}).join('');
+}
+function ago(ts){const d=Date.now()-ts;if(d<60000)return'Just now';if(d<3600000)return~~(d/60000)+' min ago';if(d<86400000)return~~(d/3600000)+' hr ago';return~~(d/86400000)+' days ago'}
+
+// ══════════════════════════════════════ AI ══════════════════════════════════════
+function setAiTab(t){AI_TAB=t;document.querySelectorAll('.ai-tab').forEach(b=>b.classList.remove('active'));$('atab-'+t).classList.add('active')}
+async function runAI(){
+  const key=GROQ||gd('gk')||'';
+  if(!key){toast('⚠️ Add Groq API key in Settings');return}
+  const btn=$('ai-run-btn');btn.disabled=true;
+  $('ai-btn-lbl').innerHTML=`<div class="dots"><span></span><span></span><span></span></div>&nbsp;Analyzing...`;
+  const tabNames={
+    analysis:{en:'🔬 Health Analysis',kn:'🔬 ಆರೋಗ್ಯ ವಿಶ್ಲೇಷಣೆ',hi:'🔬 स्वास्थ्य विश्लेषण'},
+    risk:{en:'⚠️ Risk Assessment',kn:'⚠️ ಅಪಾಯ',hi:'⚠️ जोखिम मूल्यांकन'},
+    diet:{en:'🥗 Diet & Lifestyle',kn:'🥗 ಆಹಾರ',hi:'🥗 आहार और जीवनशैली'},
+    yoga:{en:'🧘 Yoga Recommendations',kn:'🧘 ಯೋಗ ಸಲಹೆ',hi:'🧘 योग सुझाव'},
+    sleep:{en:'😴 Sleep & Recovery',kn:'😴 ನಿದ್ದೆ ಸಲಹೆ',hi:'😴 नींद सुझाव'},
+    doctor:{en:'👨‍⚕️ Doctor Summary',kn:'👨‍⚕️ ವೈದ್ಯರ ಸಲಹೆ',hi:'👨‍⚕️ डॉक्टर की सलाह'},
+  };
+  const tabTitle=(tabNames[AI_TAB]||{})[LANG]||(tabNames[AI_TAB]||{}).en||'';
+  $('ai-result').innerHTML=`<div class="ai-card"><div class="ai-card-hdr"><div class="ai-card-icon">🤖</div><div class="ai-card-title">${tabTitle}</div></div><div class="ai-card-body"><div class="dots"><span></span><span></span><span></span></div></div></div>`;
+  const p=prof();
+  const vstr=VITAL_CFG.map(c=>{const e=latest(c.id);if(!e)return null;return`${c.name.en}: ${dispVal(c,e)} ${c.unit} [${c.status(e)}]`}).filter(Boolean).join('\n');
+  const profStr=p.name?`Patient: ${p.name}, Age: ${p.age||'?'}, Gender: ${p.gender||'?'}, Condition: ${p.cond||'none'}`:'No profile set.';
+  const base=`${profStr}\n\nVitals:\n${vstr||'No vitals logged.'}`;
+  const prompts={
+    analysis:base+'\n\nGive a thorough health analysis of these readings. What is normal? What needs attention? Explain in simple language.',
+    risk:base+'\n\nList all health risks from these readings. Rate each as Low/Medium/High risk and briefly explain why.',
+    diet:base+'\n\nGive a detailed personalized Indian diet plan. Include: breakfast, lunch, dinner, snacks for the specific condition. Foods to eat, foods to avoid, and why.',
+    yoga:base+'\n\nRecommend specific yoga poses and pranayama for this patient\'s health condition and vitals. Include: pose name, benefits, duration, any precautions. Be specific to their condition.',
+    sleep:base+'\n\nAnalyze this patient\'s health and give detailed sleep recommendations. Include: ideal sleep hours, best sleep time, sleep hygiene tips, how their conditions affect sleep quality, and morning vs evening routines.',
+    doctor:base+'\n\nAct as a doctor. Which readings need medical attention? Suggest any tests, checkups, or specialist consultations needed.'
+  };
+  try{
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:`You are Health AI Pro, a friendly and knowledgeable health advisor. Respond in ${LANG==='kn'?'Kannada (ಕನ್ನಡ)':LANG==='hi'?'Hindi (हिंदी)':'English'}. Be warm, thorough, structured with bullet points and sections. Always recommend consulting a doctor for serious concerns.`},{role:'user',content:prompts[AI_TAB]||prompts.analysis}],max_tokens:800,temperature:.7})});
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    const text=data.choices[0].message.content;
+    $('ai-result').innerHTML=`<div class="ai-card"><div class="ai-card-hdr"><div class="ai-card-icon">🤖</div><div class="ai-card-title">${tabTitle}</div></div><div class="ai-card-body">${text}</div></div>`;
+  }catch(err){$('ai-result').innerHTML=`<div class="ai-card"><div class="ai-card-body" style="color:#ff4d6d">❌ ${err.message}</div></div>`}
+  btn.disabled=false;$('ai-btn-lbl').textContent=LANG==='kn'?'✨ ಆರೋಗ್ಯ ವಿಶ್ಲೇಷಿಸಿ':LANG==='hi'?'✨ स्वास्थ्य विश्लेषण करें':'✨ Analyze My Health';
+}
+
+// ══════════════════════════════════════ YOGA ══════════════════════════════════════
+let YOGA_OPEN = null;
+function renderYoga(){
+  const p=prof();
+  const autoCond = p.cond && YOGA_DATA[p.cond] ? p.cond : 'general';
+  if(!YOGA_COND || YOGA_COND==='auto') YOGA_COND=autoCond;
+
+  const chips=$('yoga-chips');
+  chips.innerHTML=Object.entries(YOGA_DATA).map(([key,val])=>`<button class="cond-chip${YOGA_COND===key?' active':''}" onclick="setYogaCond('${key}')">${val.label}</button>`).join('');
+  renderYogaPoses();
+}
+function setYogaCond(c){YOGA_COND=c;YOGA_OPEN=null;document.querySelectorAll('.cond-chip').forEach(b=>b.classList.remove('active'));document.querySelectorAll(`.cond-chip`).forEach(b=>{if(b.textContent===YOGA_DATA[c].label)b.classList.add('active')});renderYogaPoses()}
+function renderYogaPoses(){
+  const data=YOGA_DATA[YOGA_COND]||YOGA_DATA.general;
+  const box=$('yoga-content');
+  box.innerHTML=data.poses.map((pose,i)=>`
+    <div class="yoga-card">
+      <div class="yoga-card-hdr" onclick="toggleYogaPose(${i})">
+        <div class="yoga-card-icon" style="background:linear-gradient(135deg,${data.color}30,${data.color}50)">${pose.icon}</div>
+        <div class="yoga-card-info">
+          <div class="yoga-card-title">${pose.name}</div>
+          <div class="yoga-card-sub">${pose.benefit}</div>
+        </div>
+        <div class="yoga-card-badge">${pose.duration}</div>
+      </div>
+      <div class="yoga-detail${YOGA_OPEN===i?' show':''}" id="yd-${i}">
+        <div style="font-size:11px;color:var(--yoga);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-top:14px;margin-bottom:8px">HOW TO DO IT</div>
+        ${pose.steps.map((s,n)=>`<div class="yoga-step"><div class="yoga-step-num">${n+1}</div><div class="yoga-step-text">${s}</div></div>`).join('')}
+        <div class="yoga-tips-box">
+          <div class="yoga-tips-title">💡 Tips & Precautions</div>
+          ${pose.tips.map(t=>`<div class="yoga-tip">${t}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+function toggleYogaPose(i){YOGA_OPEN=YOGA_OPEN===i?null:i;renderYogaPoses()}
+
+// ══════════════════════════════════════ DIET ══════════════════════════════════════
+let DIET_ACTIVE_TAB='breakfast';
+function renderDiet(){
+  const p=prof();
+  const autoCond=p.cond && DIET_DATA[p.cond] ? p.cond : 'general';
+  if(!DIET_COND||DIET_COND==='auto') DIET_COND=autoCond;
+
+  const tabBar=$('diet-tabs');
+  const conditions=Object.keys(DIET_DATA);
+  tabBar.innerHTML=conditions.map(key=>`<button class="meal-tab${DIET_COND===key?' active':''}" onclick="setDietCond('${key}')">${DIET_DATA[key].label}</button>`).join('');
+  renderDietContent();
+}
+function setDietCond(c){DIET_COND=c;document.querySelectorAll('.meal-tab').forEach((b,i)=>{b.classList.toggle('active',Object.keys(DIET_DATA)[i]===c)});renderDietContent()}
+function renderDietContent(){
+  const data=DIET_DATA[DIET_COND]||DIET_DATA.general;
+  const meals=['breakfast','lunch','dinner','snacks'];
+  const mealIcons={breakfast:'🌅',lunch:'☀️',dinner:'🌙',snacks:'🍎'};
+  const box=$('diet-content');
+  box.innerHTML=`
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      ${meals.map(m=>`<button class="meal-tab${DIET_ACTIVE_TAB===m?' active':''}" onclick="setDietTab('${m}')" style="flex-shrink:0">${mealIcons[m]} ${m.charAt(0).toUpperCase()+m.slice(1)}</button>`).join('')}
+    </div>
+    ${meals.map(m=>{
+      const meal=data[m];if(!meal)return'';
+      return`<div class="diet-section${DIET_ACTIVE_TAB===m?' active':''}" id="diet-meal-${m}">
+        <div class="meal-card">
+          <div class="meal-card-hdr">
+            <div class="meal-time-badge">${meal.time}</div>
+            <div class="meal-title">${meal.title}</div>
+          </div>
+          <div class="meal-desc">${meal.desc}</div>
+          <div style="font-size:11px;font-weight:700;color:#06d6a0;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">✅ Eat Freely</div>
+          <div class="food-list">${meal.eat.map(f=>`<span class="food-item food-eat">${f}</span>`).join('')}</div>
+          <div style="font-size:11px;font-weight:700;color:#ff4d6d;text-transform:uppercase;letter-spacing:.7px;margin:12px 0 8px">❌ Avoid</div>
+          <div class="food-list">${meal.avoid.map(f=>`<span class="food-item food-avoid">${f}</span>`).join('')}</div>
+          <div style="font-size:11px;font-weight:700;color:#f9c74f;text-transform:uppercase;letter-spacing:.7px;margin:12px 0 8px">⚡ Moderate</div>
+          <div class="food-list">${meal.moderate.map(f=>`<span class="food-item food-moderate">${f}</span>`).join('')}</div>
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:12px 0 8px">🔬 Key Nutrients</div>
+          <div class="nutrient-row">${meal.nutrients.map(n=>`<span class="nutrient-pill">✦ ${n}</span>`).join('')}</div>
+        </div>
+      </div>`;
+    }).join('')}
+  `;
+}
+function setDietTab(t){DIET_ACTIVE_TAB=t;renderDietContent()}
+
+// ══════════════════════════════════════ WELLNESS ══════════════════════════════════════
+function initWater(){
+  const cups=$('water-cups');
+  cups.innerHTML='';
+  for(let i=0;i<8;i++){
+    const cup=document.createElement('div');
+    cup.className='water-cup'+(i<WATER_COUNT?' filled':'');
+    cup.innerHTML='🥤';
+    cup.onclick=()=>{WATER_COUNT=i+1===WATER_COUNT?i:i+1;initWater()};
+    cups.appendChild(cup);
+  }
+  $('water-info').textContent=`${WATER_COUNT} / 8 glasses • ${WATER_COUNT*250} ml`;
+}
+function resetWater(){WATER_COUNT=0;initWater();toast('💧 Water reset!')}
+function setSleepQ(el,q){SLEEP_Q=q;document.querySelectorAll('.quality-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active')}
+function saveSleep(){
+  const bed=$('sleep-bed').value,wake=$('sleep-wake').value;
+  if(!bed||!wake){toast('⚠️ Set bed and wake time');return}
+  const bedH=parseInt(bed.split(':')[0]),bedM=parseInt(bed.split(':')[1]);
+  const wakH=parseInt(wake.split(':')[0]),wakM=parseInt(wake.split(':')[1]);
+  let mins=(wakH*60+wakM)-(bedH*60+bedM);if(mins<0)mins+=1440;
+  const hrs=(mins/60).toFixed(1);
+  const qColors={poor:'#ff4d6d',fair:'#f9c74f',good:'#06d6a0',great:'#80ffdb'};
+  const qMsg={poor:'😴 Try to sleep earlier and reduce screen time.',fair:'😐 Almost there! Aim for 7-8 hours.',good:'😊 Good sleep! Keep it up.',great:'🌟 Excellent sleep! Your body is recovering well.'};
+  $('sleep-result').innerHTML=`<div style="padding:16px;border-radius:16px;background:var(--card2);border:1px solid var(--border)">
+    <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:${qColors[SLEEP_Q]}">${hrs} hrs</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:4px">${qMsg[SLEEP_Q]}</div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      ${hrs>=7&&hrs<=9?'<span style="font-size:11px;padding:4px 10px;border-radius:10px;background:rgba(6,214,160,.1);color:#06d6a0;border:1px solid rgba(6,214,160,.25)">✅ Ideal duration</span>':''}
+      ${hrs<6?'<span style="font-size:11px;padding:4px 10px;border-radius:10px;background:rgba(255,77,109,.1);color:#ff4d6d;border:1px solid rgba(255,77,109,.25)">⚠️ Too little sleep</span>':''}
+      ${hrs>9?'<span style="font-size:11px;padding:4px 10px;border-radius:10px;background:rgba(249,199,79,.1);color:#f9c74f;border:1px solid rgba(249,199,79,.25)">⚠️ Oversleeping</span>':''}
+      <span style="font-size:11px;padding:4px 10px;border-radius:10px;background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)">Quality: ${SLEEP_Q}</span>
+    </div>
+  </div>`;
+  toast('😴 Sleep logged!');
+}
+function logSteps(){
+  const steps=parseInt($('steps-input').value)||0;
+  STEPS_TODAY=steps;
+  const pct=Math.min((steps/10000)*100,100);
+  $('steps-bar').style.width=pct+'%';
+  $('steps-current').textContent=steps.toLocaleString()+' steps';
+  const msg=steps>=10000?'🎉 Goal achieved!':steps>=7500?'💪 Almost there!':steps>=5000?'👍 Good progress!':'Keep moving!';
+  toast(msg);
+}
+
+// ══════════════════════════════════════ MEDITATION ══════════════════════════════════════
+function setMedDur(mins,el){
+  if(MED_RUNNING){toast('⚠️ Stop current session first');return}
+  MED_TOTAL=mins*60;MED_REMAINING=MED_TOTAL;
+  document.querySelectorAll('.med-preset').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');updateMedDisplay();
+}
+function updateMedDisplay(){
+  const m=Math.floor(MED_REMAINING/60);const s=MED_REMAINING%60;
+  $('med-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const pct=((MED_TOTAL-MED_REMAINING)/MED_TOTAL*100).toFixed(0);
+  $('med-status').textContent=MED_RUNNING?`${pct}% complete`:'Ready';
+}
+function toggleMed(){
+  if(MED_RUNNING){
+    clearInterval(MED_INTERVAL);MED_RUNNING=false;
+    $('med-start-btn').textContent='▶ Resume';$('med-status').textContent='Paused';
+  }else{
+    if(MED_REMAINING<=0){resetMed();return}
+    MED_RUNNING=true;$('med-start-btn').textContent='⏸ Pause';
+    MED_INTERVAL=setInterval(()=>{
+      MED_REMAINING--;updateMedDisplay();
+      if(MED_REMAINING<=0){clearInterval(MED_INTERVAL);MED_RUNNING=false;$('med-start-btn').textContent='▶ Start';$('med-status').textContent='Complete! 🎉';toast('🧘 Meditation complete!')}
+    },1000);
+  }
+}
+function resetMed(){clearInterval(MED_INTERVAL);MED_RUNNING=false;MED_REMAINING=MED_TOTAL;$('med-start-btn').textContent='▶ Start';updateMedDisplay()}
+
+// ══════════════════════════════════════ HISTORY ══════════════════════════════════════
+function renderHistory(){
+  const box=$('hist-box');const l=logs();
+  if(!l.length){box.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><p>No logs yet. Start from Home!</p></div>`;return}
+  const byDate={};
+  l.forEach(x=>{const d=new Date(x.ts).toLocaleDateString();if(!byDate[d])byDate[d]=[];byDate[d].push(x)});
+  let html='';
+  Object.entries(byDate).reverse().forEach(([date,entries])=>{
+    html+=`<div class="hist-day-hdr">${date}</div>`;
+    entries.slice().reverse().forEach(e=>{
+      const cfg=VITAL_CFG.find(c=>c.id===e.id);if(!cfg)return;
+      const st=cfg.status(e);const badgeCls=st==='normal'?'badge-normal':st==='high'?'badge-high':'badge-low';
+      html+=`<div class="hist-item"><div class="hist-icon" style="background:linear-gradient(135deg,${cfg.c1},${cfg.c2})">${cfg.icon}</div><div style="flex:1"><div class="hist-meta">${cfg.name[LANG]||cfg.name.en}</div><div class="hist-reading">${dispVal(cfg,e)} <span style="font-size:12px;color:var(--muted)">${cfg.unit}</span></div><div class="hist-meta">${ago(e.ts)}</div></div><div class="vital-badge ${badgeCls} hist-badge">${tx(st)}</div></div>`;
+    });
+  });
+  box.innerHTML=html;
+}
+
+// ══════════════════════════════════════ PAGE NAV ══════════════════════════════════════
+function goPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  $('page-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  if(name==='history')renderHistory();
+  if(name==='home')renderVitals();
+}
+
+// ══════════════════════════════════════ UTILS ══════════════════════════════════════
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500)}
+function exportData(){const blob=new Blob([JSON.stringify({profile:prof(),logs:logs(),exported:new Date().toISOString()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='health-ai-pro.json';a.click()}
+function clearData(){if(!confirm('Clear all health data?'))return;localStorage.removeItem('vl');toast('🗑️ Cleared');renderVitals();renderHistory()}
+
+// ══════════════════════════════════════ INIT ══════════════════════════════════════
+(function init(){
+  GROQ=gd('gk')||'';
+  if(GROQ)$('api-key-inp').value=GROQ;
+  const p=prof();
+  if(p.name)$('p-name').value=p.name;
+  if(p.age)$('p-age').value=p.age;
+  if(p.gender)$('p-gender').value=p.gender;
+  if(p.cond)$('p-cond').value=p.cond;
+  setLang('en');
+  initWater();
+  updateMedDisplay();
+  YOGA_COND = p.cond && YOGA_DATA[p.cond] ? p.cond : 'general';
+  DIET_COND = p.cond && DIET_DATA[p.cond] ? p.cond : 'general';
+})();
+</script>
+</body>
+</html>
